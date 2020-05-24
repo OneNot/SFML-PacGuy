@@ -16,9 +16,9 @@ Map::Map(sf::RenderWindow& renderWindow)
 		{
 			//std::cout << "at " << y << x << ": ";
 			data[y][x] = (static_cast<int>(mapImg.getPixel(50 + y * 100, 50 + x * 100).a) == 0 ? 0 : 1);
-			//std::cout << (map[y][x] == 0 ? " " : "#");
+			std::cout << (data[y][x] == 0 ? " " : "#");
 		}
-		//std::cout << std::endl;
+		std::cout << std::endl;
 	}
 
 	texture.setSmooth(true);
@@ -31,4 +31,9 @@ Map::Map(sf::RenderWindow& renderWindow)
 		renderWindow.getSize().y / 2 - (mapSpriteBounds.top + mapSpriteBounds.height * scale / 2));
 
 	scaledSquareSize = 100.0f * scale;
+}
+
+int Map::GetMapDataAt(sf::Vector2i pos)
+{
+	return data[pos.x][pos.y];
 }

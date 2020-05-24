@@ -9,6 +9,11 @@ class Character
 {
 private:
 	sf::Texture texture;
+	sf::IntRect rectSource;
+	void HandleNewMovementSquare(Map &map);
+	sf::Clock animationClock;
+	int currentAnimationFrame;
+	sf::Vector2f rotationPosOffset;
 
 public:
 	sf::Sprite sprite;
@@ -20,6 +25,6 @@ public:
 	Direction currentMoveDir = Direction::None;
 	Direction nextMoveDirInstruction = Direction::None;
 	sf::Vector2i mapLocation;
-
+	int numOfAnimationFrames = 3;
+	void HandleAnimation();
 };
-

@@ -33,17 +33,14 @@ Basic movement scenario example:
 **************************************
 
 Notes for next time:
-- map data array is created from the image itself now
-- added tracking for map (array) location
-- Nothing else new really, but massively refactored the code. Split things up to classes and such
+- more or less finished movement
+- updated player sprite. Now animated using spritesheet
 
 
 TODO:
-- Need to start using the map data with the movement handling to check what directions are allowed when
 - Collectables
 - Enemies
 - Edge teleport
-- Animating
 - Audio
 - Need to do a little bit of code cleanup and refactoring
 */
@@ -76,7 +73,8 @@ int main()
 	Map map = Map::Map(window);
 
 	//Load and initialize player
-	Player player = Player(window, map, "Assets/Sprites/pac-guy.png");
+	Player player = Player(window, map, "Assets/Sprites/pac-guys_spritesheet.png");
+	player.moveSpeed = 150.0f;
 
 #pragma endregion
 

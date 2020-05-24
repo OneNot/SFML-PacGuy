@@ -13,4 +13,5 @@ public:
 	Map(sf::RenderWindow &renderWindow);
 	float scale;
 	float scaledSquareSize;
+	int GetMapDataAt(sf::Vector2i pos);
 };
