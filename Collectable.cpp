@@ -6,7 +6,6 @@
 sf::Texture Collectable::texture;
 bool Collectable::textureSet;
 std::vector<std::unique_ptr<Collectable>> Collectable::collectables = std::vector<std::unique_ptr<Collectable>>();
-int Collectable::TotalNumOfCollectables = 0;
 
 Collectable::Collectable(Map &map, sf::Vector2i spawnMapLocation)
 {
@@ -31,7 +30,7 @@ Collectable::Collectable(Map &map, sf::Vector2i spawnMapLocation)
 	sprite.setPosition(realSpawnLocation);
 	mapLocation = spawnMapLocation;
 
-	TotalNumOfCollectables++;
+	GameManager::TotalNumOfCollectables++;
 
 	//std::cout << "spawnPos: " << realSpawnLocation.x << "," << realSpawnLocation.y << std::endl;
 	//std::cout << "spawnPos: " <<  mapLocation.x << "," << mapLocation.y << std::endl;
@@ -83,18 +82,17 @@ bool Collectable::TryGetCollectableAtMapPos(Character& collector, sf::Vector2i m
 	{
 		if (collectables.at(i)->mapLocation == mapPos)
 		{
-			collectables.at(i)->Collect(collector, i);
+			collectables.at(i)->Collect(i);
 			return true;
 		}
 	}
 	return false;
 }
 
-void Collectable::Collect(Character& collector, int vectorPos)
+void Collectable::Collect(int vectorPos)
 {
-	std::cout << typeid(collector).name() << " collected 1 for value of: " << scoreValue << " | " << collector.CollectablesCollected << "/" << TotalNumOfCollectables << " collected" << std::endl;
-	collector.CollectablesCollected++;
-	collector.UpdateScore(scoreValue);
+	GameManager::AddToCollected();
+	GameManager::UpdateScore(scoreValue);
 	collectables.erase(collectables.begin() + vectorPos); //is this enough? Does this cause memory leaks and shit?
 }
 

@@ -22,9 +22,8 @@ public:
 	static void GenerateCollectables(class Map& map);
 	static void DrawCollectables(sf::RenderWindow& window);
 	static void PrintCollectables();
-	void Collect(class Character& collector, int vectorPos);
+	void Collect(int vectorPos);
 	Collectable(class Map& map, sf::Vector2i spawnMapLocation);
 	static bool TryGetCollectableAtMapPos(class Character& collector, sf::Vector2i mapPos);
-	static int TotalNumOfCollectables;
 };
 

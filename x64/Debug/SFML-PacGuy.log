@@ -1,4 +1,3 @@
-﻿  Collectable.cpp
-  main.cpp
-  Generating Code...
+﻿  GameManager.cpp
+D:\OtherProjects\SFML-PacGuy\SFML-PacGuy\GameManager.h(29,2): warning C4091: 'static ': ignored on left of 'GameManager' when no variable is declared
   SFML-PacGuy.vcxproj -> D:\OtherProjects\SFML-PacGuy\SFML-PacGuy\x64\Debug\SFML-PacGuy.exe

@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "Player.h"
 #include "Collectable.h"
+#include "UITextElement.h"
 
 /*
 Some planning
@@ -34,10 +35,10 @@ Basic movement scenario example:
 **************************************
 
 Notes for next time:
-- added collectable pellets
-- pellets give points
-- num of pellets / all pellets tracked
-- pellets get deleted on collection (might need to do some sort of memory management, but not sure)
+- UITextElement system
+- score and collected tracked and shown on screen
+- game manager
+- pause
 
 
 TODO:
@@ -53,38 +54,44 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Pac-Guy");
 
-#pragma region Loading assets and creating objects
+	#pragma region Loading assets and creating objects
 
-	// Create a font object and load it from file relative
-	sf::Font font;
-	if (!font.loadFromFile("Assets/Fonts/impact.ttf"))
-	{
-		std::cout << "Failed to load: Assets/Fonts/impact.ttf" << std::endl;
-		return 42;
-	}
+		// Create a font object and load it from file relative
+		sf::Font font;
+		if (!font.loadFromFile("Assets/Fonts/impact.ttf"))
+		{
+			std::cout << "Failed to load: Assets/Fonts/impact.ttf" << std::endl;
+			return 42;
+		}
 
-	//Create Hello World text object using our font and size 128pt
-	sf::Text gameTitleText("Pac-Guy", font, 48);
-	gameTitleText.setFillColor(sf::Color::Red); //set text color to red
+		#pragma region Creating UI Elements
+			UITextElement gameTitleText = UITextElement(window, "Pac-Guy", font, sf::Color::Yellow, 48, UIAnchor::TopMid);
 
-	//Get the text object's physical dimensions and use them to center the text to our render window
-	//By default things are drawn relative to their top left corner and can be changed by calling setOrigin()
-	sf::FloatRect gameTitleTextBounds(gameTitleText.getLocalBounds());
-	gameTitleText.setPosition(window.getSize().x / 2 - (gameTitleTextBounds.left + gameTitleTextBounds.width / 2), 0);
+			UITextElement pauseText = UITextElement(window, "PAUSE", font, sf::Color::Yellow, 128, UIAnchor::Mid);
+			UITextElement pauseSubText = UITextElement(window, "Press ESC to unpause", font, sf::Color::Yellow, 32, pauseText, UIAnchor::LowMid);
 
-	//Load and initialize map
-	Map map = Map::Map(window);
+			UITextElement winText = UITextElement(window, "YOU WIN!", font, sf::Color::Green, 128, UIAnchor::Mid);
+			UITextElement winSubText = UITextElement(window, "Score", font, sf::Color::White, 64, winText, UIAnchor::LowMid);
+			UITextElement winScoreText = UITextElement(window, "", font, sf::Color::White, 64, winSubText, UIAnchor::LowMid);
+			GameManager::UIWinScore = &winScoreText;
 
-	Collectable::GenerateCollectables(map);
+			UITextElement UIScoreText = UITextElement(window, "Score: 0", font, sf::Color::Yellow, 25, UIAnchor::TopLeft, sf::Vector2f(5, 5));
+			GameManager::UIScore = &UIScoreText;
+			UITextElement UICollectText = UITextElement(window, "Collected: 0", font, sf::Color::Yellow, 25, UIScoreText, UIAnchor::LowLeft, sf::Vector2f(0, 5));
+			GameManager::UICollected = &UICollectText;
+		#pragma endregion
 
-	//Load and initialize player
-	Player player = Player(window, map, "Assets/Sprites/pac-guys_spritesheet.png");
+		//Load and initialize map
+		Map map = Map::Map(window);
 
-	player.moveSpeed = 150.0f;
+		Collectable::GenerateCollectables(map);
 
-	
+		//Load and initialize player
+		Player player = Player(window, map, "Assets/Sprites/pac-guys_spritesheet.png");
 
-#pragma endregion
+		player.moveSpeed = 150.0f;
+
+	#pragma endregion
 
 	float delta = 0.0f;
 	sf::Clock frameTimeClock;
@@ -92,6 +99,9 @@ int main()
 	//for framerate
 	/*sf::Clock frameRateClock;
 	int frameCount = 0;*/
+
+	sf::Clock scoreLossClock;
+	GameManager::scoreLossClock = &scoreLossClock;
 
 	while (window.isOpen())
 	{
@@ -104,34 +114,66 @@ int main()
 			//Event driven input handling
 			if (event.type == sf::Event::EventType::KeyPressed)
 			{
-				if (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::A)
-					player.nextMoveDirInstruction = Direction::Left;
-				if (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::D)
-					player.nextMoveDirInstruction = Direction::Right;
-				if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W)
-					player.nextMoveDirInstruction = Direction::Up;
-				if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S)
-					player.nextMoveDirInstruction = Direction::Down;
+				if (event.key.code == sf::Keyboard::Escape)
+					GameManager::TogglePauseGame();
+
+				//allow movement inputs if the game isnt paused, won or lost
+				if (GameManager::GetGameState() == GameState::Playing)
+				{
+					if (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::A)
+						player.nextMoveDirInstruction = Direction::Left;
+					if (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::D)
+						player.nextMoveDirInstruction = Direction::Right;
+					if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W)
+						player.nextMoveDirInstruction = Direction::Up;
+					if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S)
+						player.nextMoveDirInstruction = Direction::Down;
+				}
 			}
 		}
 
-		player.MovementHandling(map, delta);
+		if (GameManager::GetGameState() == GameState::Playing)
+		{
+			player.MovementHandling(map, delta);
+			GameManager::HandleScoreLossTimer();
+		}
 
 		//tutorial I'm loosely following placed the frame timer restart here...
 		//not sure why, I would think it makes more sense to include the drawing and displaying in the frame time?
 		//so I'm putting it after them for now
 
-		window.clear(sf::Color::Color(48, 25, 52, 255));
-		window.draw(gameTitleText);
-		window.draw(map.sprite);
-		window.draw(player.sprite);
-		Collectable::DrawCollectables(window);
-		window.display();
+		#pragma region Draw and display
+			window.clear(sf::Color::Color(48, 25, 52, 255));
+			window.draw(gameTitleText.text);
+			window.draw(map.sprite);
+			window.draw(player.sprite);
+			Collectable::DrawCollectables(window);
+
+			if (GameManager::GetGameState() == GameState::Paused)
+			{
+				window.draw(pauseText.text);
+				window.draw(pauseSubText.text);
+			}
+			else if (GameManager::GetGameState() == GameState::Playing)
+			{
+				window.draw(UIScoreText.text);
+				window.draw(UICollectText.text);
+			}
+			else if (GameManager::GetGameState() == GameState::Won)
+			{
+				window.draw(winText.text);
+				window.draw(winSubText.text);
+				window.draw(winScoreText.text);
+			}
+
+			window.display();
+		#pragma endregion
 
 		//get frame time
 		delta = static_cast<float>(frameTimeClock.getElapsedTime().asMicroseconds()) / 1000000.0f;
 		//std::cout << "delta (ms): " << delta << std::endl;
 		frameTimeClock.restart();
+
 		//frameCount++;
 
 		//get framerate

@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Direction.h"
 #include "Map.h"
+#include "GameManager.h"
 
 class Character
 {
@@ -29,6 +30,4 @@ public:
 	sf::Vector2i mapLocation;
 	int numOfAnimationFrames = 3;
 	void HandleAnimation();
-	virtual void UpdateScore(int scoreChange) {};
-	int CollectablesCollected = 0;
 };
