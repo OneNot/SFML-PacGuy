@@ -15,13 +15,12 @@ Character::Character(sf::RenderWindow& renderWindow, Map& map, std::string chara
 	sprite.setScale(map.scale, map.scale);
 	sf::FloatRect pacGuySpriteBounds(sprite.getLocalBounds());
 
-	//Currently just putting it in the middle if no custom value is given
+	//Currently just putting it in mainSpawnLocation if no custom value is given
 	//if a custom value is given, but it's not a valid position, then also use this
 	//we can assume that 0,0 is not a custom value because even if it is, that's not a valid value anyways as it would be in a wall
 	if (spawnMapPosition == sf::Vector2i::Vector2(0, 0))
 	{
-		sprite.setPosition(renderWindow.getSize().x / 2 - (pacGuySpriteBounds.left + pacGuySpriteBounds.width * map.scale / 2),
-			renderWindow.getSize().y / 2 - (pacGuySpriteBounds.top + pacGuySpriteBounds.height * map.scale / 2));
+		sprite.setPosition(map.sprite.getPosition() + sf::Vector2f((map.scaledSquareSize * map.mainSpawnMapLocation.x), (map.scaledSquareSize * map.mainSpawnMapLocation.y)));
 	}
 
 	//TODO: support custom values for spawn position
@@ -163,8 +162,6 @@ void Character::HandleAnimation()
 
 void Character::HandleNewMovementSquare(Map& map)
 {
-	//If recorded next move instruction is valid
-
 	//===== next instruction is UP and is valid =====//
 	if (nextMoveDirInstruction == Direction::Up && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y - 1)) == 0)
 	{

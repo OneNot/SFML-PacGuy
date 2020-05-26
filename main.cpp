@@ -4,6 +4,7 @@
 #include "Direction.h"
 #include "Map.h"
 #include "Player.h"
+#include "Collectable.h"
 
 /*
 Some planning
@@ -33,12 +34,14 @@ Basic movement scenario example:
 **************************************
 
 Notes for next time:
-- more or less finished movement
-- updated player sprite. Now animated using spritesheet
+- added collectable pellets
+- pellets give points
+- num of pellets / all pellets tracked
+- pellets get deleted on collection (might need to do some sort of memory management, but not sure)
 
 
 TODO:
-- Collectables
+- More collectables
 - Enemies
 - Edge teleport
 - Audio
@@ -72,9 +75,14 @@ int main()
 	//Load and initialize map
 	Map map = Map::Map(window);
 
+	Collectable::GenerateCollectables(map);
+
 	//Load and initialize player
 	Player player = Player(window, map, "Assets/Sprites/pac-guys_spritesheet.png");
+
 	player.moveSpeed = 150.0f;
+
+	
 
 #pragma endregion
 
@@ -117,6 +125,7 @@ int main()
 		window.draw(gameTitleText);
 		window.draw(map.sprite);
 		window.draw(player.sprite);
+		Collectable::DrawCollectables(window);
 		window.display();
 
 		//get frame time

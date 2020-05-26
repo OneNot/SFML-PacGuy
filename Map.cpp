@@ -20,7 +20,7 @@ Map::Map(sf::RenderWindow& renderWindow)
 		}
 		std::cout << std::endl;
 	}
-
+	
 	texture.setSmooth(true);
 	sprite = sf::Sprite(texture);
 	scale = (static_cast<float>(renderWindow.getSize().y) - 120) / static_cast<float>(texture.getSize().y);
@@ -31,9 +31,19 @@ Map::Map(sf::RenderWindow& renderWindow)
 		renderWindow.getSize().y / 2 - (mapSpriteBounds.top + mapSpriteBounds.height * scale / 2));
 
 	scaledSquareSize = 100.0f * scale;
+
+	mainSpawnMapLocation = sf::Vector2i(9, 9);
 }
 
 int Map::GetMapDataAt(sf::Vector2i pos)
 {
 	return data[pos.x][pos.y];
 }
+
+int Map::GetMapDataAt(int x, int y)
+{
+	return data[x][y];
+}
+
+
+

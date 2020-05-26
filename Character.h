@@ -10,10 +10,12 @@ class Character
 private:
 	sf::Texture texture;
 	sf::IntRect rectSource;
-	void HandleNewMovementSquare(Map &map);
 	sf::Clock animationClock;
 	int currentAnimationFrame;
 	sf::Vector2f rotationPosOffset;
+
+protected:
+	virtual void HandleNewMovementSquare(Map& map);
 
 public:
 	sf::Sprite sprite;
@@ -27,4 +29,6 @@ public:
 	sf::Vector2i mapLocation;
 	int numOfAnimationFrames = 3;
 	void HandleAnimation();
+	virtual void UpdateScore(int scoreChange) {};
+	int CollectablesCollected = 0;
 };
