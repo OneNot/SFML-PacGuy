@@ -45,5 +45,13 @@ int Map::GetMapDataAt(int x, int y)
 	return data[x][y];
 }
 
+sf::Vector2f Map::MapPosToRealPos(sf::Vector2i mapPos)
+{
+	return sf::Vector2f(
+		sprite.getPosition().x + scaledSquareSize * mapPos.x,
+		sprite.getPosition().y + scaledSquareSize * mapPos.y
+	);
+}
+
 
 

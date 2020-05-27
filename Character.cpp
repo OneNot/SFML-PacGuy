@@ -162,52 +162,67 @@ void Character::HandleAnimation()
 
 void Character::HandleNewMovementSquare(Map& map)
 {
-	//===== next instruction is UP and is valid =====//
-	if (nextMoveDirInstruction == Direction::Up && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y - 1)) == 0)
+	if (mapLocation == map.teleports[0])
 	{
-		currentMoveDir = nextMoveDirInstruction; //set the next move instruction as the current followed instruction
-		sprite.setRotation(-90);
-		sprite.move(-rotationPosOffset); //remove the current rotation offset from position
-		rotationPosOffset = sf::Vector2f(0.0f, 100.0f * map.scale); //set new offset
-		sprite.move(rotationPosOffset); //apply new offset
+		//teleport to 1
+		sprite.setPosition(map.MapPosToRealPos(map.teleports[1]) + rotationPosOffset);
+		mapLocation = map.teleports[1];
 	}
-
-	//===== next instruction is DOWN and is valid =====//
-	else if (nextMoveDirInstruction == Direction::Down && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y + 1)) == 0)
+	else if (mapLocation == map.teleports[1])
 	{
-		currentMoveDir = nextMoveDirInstruction; //set the next move instruction as the current followed instruction
-		sprite.setRotation(90);
-		sprite.move(-rotationPosOffset); //remove the current rotation offset from position
-		rotationPosOffset = sf::Vector2f(100.0f * map.scale, 0.0f); //set new offset
-		sprite.move(rotationPosOffset); //apply new offset
+		//teleport to 0
+		sprite.setPosition(map.MapPosToRealPos(map.teleports[0]) + rotationPosOffset);
+		mapLocation = map.teleports[0];
 	}
-
-	//===== next instruction is LEFT and is valid =====//
-	else if (nextMoveDirInstruction == Direction::Left && map.GetMapDataAt(sf::Vector2i(mapLocation.x - 1, mapLocation.y)) == 0)
+	else
 	{
-		currentMoveDir = nextMoveDirInstruction; //set the next move instruction as the current followed instruction
-		sprite.setRotation(180);
-		sprite.move(-rotationPosOffset); //remove the current rotation offset from position
-		rotationPosOffset = sf::Vector2f(100.0f * map.scale, 100.0f * map.scale); //set new offset
-		sprite.move(rotationPosOffset); //apply new offset
-	}
+		//===== next instruction is UP and is valid =====//
+		if (nextMoveDirInstruction == Direction::Up && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y - 1)) == 0)
+		{
+			currentMoveDir = nextMoveDirInstruction; //set the next move instruction as the current followed instruction
+			sprite.setRotation(-90);
+			sprite.move(-rotationPosOffset); //remove the current rotation offset from position
+			rotationPosOffset = sf::Vector2f(0.0f, 100.0f * map.scale); //set new offset
+			sprite.move(rotationPosOffset); //apply new offset
+		}
 
-	//===== next instruction is RIGHT and is valid =====//
-	else if (nextMoveDirInstruction == Direction::Right && map.GetMapDataAt(sf::Vector2i(mapLocation.x + 1, mapLocation.y)) == 0)
-	{
-		currentMoveDir = nextMoveDirInstruction; //set the next move instruction as the current followed instruction
-		sprite.setRotation(0);
-		sprite.move(-rotationPosOffset); //remove the current rotation offset from position
-		rotationPosOffset = sf::Vector2f(0, 0); //set new offset
-		//no need to apply since new offset == 0
-	}
+		//===== next instruction is DOWN and is valid =====//
+		else if (nextMoveDirInstruction == Direction::Down && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y + 1)) == 0)
+		{
+			currentMoveDir = nextMoveDirInstruction; //set the next move instruction as the current followed instruction
+			sprite.setRotation(90);
+			sprite.move(-rotationPosOffset); //remove the current rotation offset from position
+			rotationPosOffset = sf::Vector2f(100.0f * map.scale, 0.0f); //set new offset
+			sprite.move(rotationPosOffset); //apply new offset
+		}
 
-	//given instruction is not valid: check if we can keep moving in previous direction or if we should stop
-	else if ((currentMoveDir == Direction::Up && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y - 1)) == 1) ||
-		(currentMoveDir == Direction::Down && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y + 1)) == 1) ||
-		(currentMoveDir == Direction::Left && map.GetMapDataAt(sf::Vector2i(mapLocation.x - 1, mapLocation.y)) == 1) ||
-		(currentMoveDir == Direction::Right && map.GetMapDataAt(sf::Vector2i(mapLocation.x + 1, mapLocation.y)) == 1))
-		currentMoveDir = Direction::None; //stop
+		//===== next instruction is LEFT and is valid =====//
+		else if (nextMoveDirInstruction == Direction::Left && map.GetMapDataAt(sf::Vector2i(mapLocation.x - 1, mapLocation.y)) == 0)
+		{
+			currentMoveDir = nextMoveDirInstruction; //set the next move instruction as the current followed instruction
+			sprite.setRotation(180);
+			sprite.move(-rotationPosOffset); //remove the current rotation offset from position
+			rotationPosOffset = sf::Vector2f(100.0f * map.scale, 100.0f * map.scale); //set new offset
+			sprite.move(rotationPosOffset); //apply new offset
+		}
+
+		//===== next instruction is RIGHT and is valid =====//
+		else if (nextMoveDirInstruction == Direction::Right && map.GetMapDataAt(sf::Vector2i(mapLocation.x + 1, mapLocation.y)) == 0)
+		{
+			currentMoveDir = nextMoveDirInstruction; //set the next move instruction as the current followed instruction
+			sprite.setRotation(0);
+			sprite.move(-rotationPosOffset); //remove the current rotation offset from position
+			rotationPosOffset = sf::Vector2f(0, 0); //set new offset
+			//no need to apply since new offset == 0
+		}
+
+		//given instruction is not valid: check if we can keep moving in previous direction or if we should stop
+		else if ((currentMoveDir == Direction::Up && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y - 1)) == 1) ||
+			(currentMoveDir == Direction::Down && map.GetMapDataAt(sf::Vector2i(mapLocation.x, mapLocation.y + 1)) == 1) ||
+			(currentMoveDir == Direction::Left && map.GetMapDataAt(sf::Vector2i(mapLocation.x - 1, mapLocation.y)) == 1) ||
+			(currentMoveDir == Direction::Right && map.GetMapDataAt(sf::Vector2i(mapLocation.x + 1, mapLocation.y)) == 1))
+			currentMoveDir = Direction::None; //stop
+	}
 
 	prevSquareMidPos = sprite.getPosition(); //set prevSquareMidPos to new pos, as we are now at a new mid-square. Has to be done last due to the offsets
 }

@@ -35,16 +35,12 @@ Basic movement scenario example:
 **************************************
 
 Notes for next time:
-- UITextElement system
-- score and collected tracked and shown on screen
-- game manager
-- pause
+- teleports
+- cherries
 
 
 TODO:
-- More collectables
 - Enemies
-- Edge teleport
 - Audio
 - Need to do a little bit of code cleanup and refactoring
 */
@@ -89,7 +85,7 @@ int main()
 		//Load and initialize player
 		Player player = Player(window, map, "Assets/Sprites/pac-guys_spritesheet.png");
 
-		player.moveSpeed = 150.0f;
+		player.moveSpeed = 200.0f;
 
 	#pragma endregion
 
