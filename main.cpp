@@ -85,7 +85,7 @@ int main()
 		//Load and initialize player
 		Player player = Player(window, map, "Assets/Sprites/pac-guys_spritesheet.png");
 
-		player.moveSpeed = 200.0f;
+		player.moveSpeed = 400.0f * map.scale;
 
 	#pragma endregion
 
