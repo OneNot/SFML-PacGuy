@@ -26,6 +26,7 @@ public:
 	static void ResumeGame();
 	static void TogglePauseGame();
 	static void WinGame();
+	static void LoseGame();
 	static void HandleScoreLossTimer();
 	static void ForceSetGameState(GameState state);
 };

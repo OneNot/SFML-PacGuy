@@ -8,6 +8,7 @@ class AudioManager
 {
 public:
 	static std::map<std::string, std::unique_ptr<AudioElement>> sounds;
+	static sf::Music music;
 	static void InitializeAudio();
 };
 

@@ -36,8 +36,7 @@ GameState GameManager::GetGameState()
 void GameManager::PauseGame()
 {
 	gameState = GameState::Paused;
-	if (AudioManager::sounds["waka"]->sound.getStatus() == sf::SoundSource::Status::Playing)
-		AudioManager::sounds["waka"]->sound.stop();
+	AudioManager::sounds["waka"]->sound.stop();
 }
 
 void GameManager::ResumeGame()
@@ -57,6 +56,15 @@ void GameManager::WinGame()
 {
 	UIWinScore->text.setString(std::to_string(score));//TODO: needs to be re-centered
 	gameState = GameState::Won;
+}
+
+void GameManager::LoseGame()
+{
+	UIWinScore->text.setString(std::to_string(score));//TODO: needs to be re-centered
+	AudioManager::sounds["waka"]->sound.stop();
+	AudioManager::music.stop();
+	AudioManager::sounds["death"]->sound.play();
+	gameState = GameState::Lost;
 }
 
 void GameManager::HandleScoreLossTimer()

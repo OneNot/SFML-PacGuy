@@ -5,6 +5,7 @@
 #include "Direction.h"
 #include "Map.h"
 #include "Player.h"
+#include "Rando.h"
 #include "Collectable.h"
 #include "UITextElement.h"
 #include "AudioManager.h"
@@ -37,22 +38,21 @@ Basic movement scenario example:
 **************************************
 
 Notes for next time:
-- teleports
-- cherries
-- audio:
-	- music
-	- pacman moving/chewing
-	- eat fruit
-
+- Enemies
+	- Rando: moves nearly randomly
+- Player <-> Enemy collision
+- Death and Lose Game conditions
 
 TODO:
-- Enemies
+- More Enemies
 - Need to do a little bit of code cleanup and refactoring
 */
 
 
 int main()
 {
+	srand(time(NULL));
+
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Pac-Guy");
 
 	#pragma region Loading assets and creating objects
@@ -74,10 +74,14 @@ int main()
 			UITextElement pauseText = UITextElement(window, "PAUSE", font, sf::Color::Yellow, 128, UIAnchor::Mid);
 			UITextElement pauseSubText = UITextElement(window, "Press ESC to unpause", font, sf::Color::Yellow, 32, pauseText, UIAnchor::LowMid);
 
+			UITextElement loseText = UITextElement(window, "YOU LOSE!", font, sf::Color::Red, 128, UIAnchor::Mid);
+			UITextElement loseSubText = UITextElement(window, "Score:", font, sf::Color::White, 64, loseText, UIAnchor::LowMid);
+
 			UITextElement winText = UITextElement(window, "YOU WIN!", font, sf::Color::Green, 128, UIAnchor::Mid);
 			UITextElement winSubText = UITextElement(window, "Score", font, sf::Color::White, 64, winText, UIAnchor::LowMid);
-			UITextElement winScoreText = UITextElement(window, "", font, sf::Color::White, 64, winSubText, UIAnchor::LowMid);
-			GameManager::UIWinScore = &winScoreText;
+			UITextElement winLoseScoreText = UITextElement(window, "0000000", font, sf::Color::White, 64, winSubText, UIAnchor::LowMid);
+			UITextElement winLoseSubText2 = UITextElement(window, "No restart implemented currently. Please restart program.", font, sf::Color::White, 20, winLoseScoreText, UIAnchor::LowMid);
+			GameManager::UIWinScore = &winLoseScoreText;
 
 			UITextElement UIScoreText = UITextElement(window, "Score: 0", font, sf::Color::Yellow, 25, UIAnchor::TopLeft, sf::Vector2f(5, 5));
 			GameManager::UIScore = &UIScoreText;
@@ -96,16 +100,12 @@ int main()
 		//Load and initialize player
 		Player player = Player(window, map, "Assets/Sprites/pac-guys_spritesheet.png");
 
+		Rando rando = Rando(window, map, "Assets/Sprites/ghost1_spritesheet.png", sf::Vector2i(1, 1));
+
 		player.moveSpeed = 400.0f * map.scale;
+		rando.moveSpeed = 400.0f * map.scale;
 
 	#pragma endregion
-
-	//MUSIC
-	sf::Music music;
-	if (!music.openFromFile("Assets/Audio/Pac-man-theme-remix-By-Arsenic19.wav"))
-		return -1;
-	music.setLoop(true);
-	music.play();
 
 
 	float delta = 0.0f;
@@ -153,6 +153,7 @@ int main()
 		if (GameManager::GetGameState() == GameState::Playing)
 		{
 			player.MovementHandling(map, delta);
+			rando.MovementHandling(map, delta);
 			GameManager::HandleScoreLossTimer();
 		}
 
@@ -164,8 +165,9 @@ int main()
 			window.clear(sf::Color::Color(48, 25, 52, 255));
 			window.draw(gameTitleText.text);
 			window.draw(map.sprite);
-			window.draw(player.sprite);
 			Collectable::DrawCollectables(window);
+			window.draw(player.sprite);
+			window.draw(rando.sprite);
 
 			if (GameManager::GetGameState() == GameState::Menu)
 			{
@@ -186,7 +188,15 @@ int main()
 			{
 				window.draw(winText.text);
 				window.draw(winSubText.text);
-				window.draw(winScoreText.text);
+				window.draw(winLoseScoreText.text);
+				window.draw(winLoseSubText2.text);
+			}
+			else if (GameManager::GetGameState() == GameState::Lost)
+			{
+				window.draw(loseText.text);
+				window.draw(loseSubText.text);
+				window.draw(winLoseScoreText.text);
+				window.draw(winLoseSubText2.text);
 			}
 
 			window.display();

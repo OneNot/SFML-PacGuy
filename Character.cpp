@@ -21,12 +21,15 @@ Character::Character(sf::RenderWindow& renderWindow, Map& map, std::string chara
 	if (spawnMapPosition == sf::Vector2i::Vector2(0, 0))
 	{
 		sprite.setPosition(map.sprite.getPosition() + sf::Vector2f((map.scaledSquareSize * map.mainSpawnMapLocation.x), (map.scaledSquareSize * map.mainSpawnMapLocation.y)));
+		mapLocation = map.mainSpawnMapLocation;
+	}
+	else
+	{
+		sprite.setPosition(map.sprite.getPosition() + sf::Vector2f((map.scaledSquareSize * spawnMapPosition.x), (map.scaledSquareSize * spawnMapPosition.y)));
+		mapLocation = spawnMapPosition;
 	}
 
-	//TODO: support custom values for spawn position
-
 	prevSquareMidPos = sprite.getPosition();
-	mapLocation = sf::Vector2i(9, 9); //temp, remember to actually calculate dynamically when making support for custom values
 	std::cout << "LOCATION: " << mapLocation.x << ", " << mapLocation.y << std::endl;
 
 	animationClock = sf::Clock();
@@ -36,6 +39,7 @@ void Character::MovementHandling(Map &map, float delta)
 {
 	//TODO: A lot of repeated code here... Might refactor this a bit later
 
+	CollisionCheck();
 	HandleAnimation();
 
 	sf::Vector2f currentPos = sprite.getPosition(); //current pos before movement
@@ -55,10 +59,7 @@ void Character::MovementHandling(Map &map, float delta)
 			sprite.setPosition(nextPos);
 
 			mapLocation.y--; //set new map data position
-			std::cout << "LOCATION: " << mapLocation.x << ", " << mapLocation.y << std::endl;
-			movedSinceLastSquareMid = 0.0f; //reset how much we have moved since last mid-square, as we are now at a new mid-square
 			HandleNewMovementSquare(map); //do the operations needed when reaching a new square (map data location)
-			return; //nothing else needs to be done here so we can stop the method
 		}
 		else
 			sprite.move(movement); //...else just move player
@@ -78,10 +79,7 @@ void Character::MovementHandling(Map &map, float delta)
 			sprite.setPosition(nextPos);
 
 			mapLocation.y++; //set new map data position
-			std::cout << "LOCATION: " << mapLocation.x << ", " << mapLocation.y << std::endl;
-			movedSinceLastSquareMid = 0.0f; //reset how much we have moved since last mid-square, as we are now at a new mid-square
 			HandleNewMovementSquare(map); //do the operations needed when reaching a new square (map data location)
-			return; //nothing else needs to be done here so we can stop the method
 		}
 		else
 			sprite.move(movement); //...else just move player
@@ -101,10 +99,7 @@ void Character::MovementHandling(Map &map, float delta)
 			sprite.setPosition(nextPos);
 
 			mapLocation.x--; //set new map data position
-			std::cout << "LOCATION: " << mapLocation.x << ", " << mapLocation.y << std::endl;
-			movedSinceLastSquareMid = 0.0f; //reset how much we have moved since last mid-square, as we are now at a new mid-square
 			HandleNewMovementSquare(map); //do the operations needed when reaching a new square (map data location)
-			return; //nothing else needs to be done here so we can stop the method
 		}
 		else
 			sprite.move(movement); //...else just move player
@@ -124,21 +119,13 @@ void Character::MovementHandling(Map &map, float delta)
 			sprite.setPosition(nextPos);
 
 			mapLocation.x++; //set new map data position
-			std::cout << "LOCATION: " << mapLocation.x << ", " << mapLocation.y << std::endl;
-			movedSinceLastSquareMid = 0.0f; //reset how much we have moved since last mid-square, as we are now at a new mid-square
 			HandleNewMovementSquare(map); //do the operations needed when reaching a new square (map data location)
-			return; //nothing else needs to be done here so we can stop the method
 		}
 		else
 			sprite.move(movement); //...else just move player
 	}
 	else //no move dir yet
-	{
 		HandleNewMovementSquare(map); //do the operations needed when reaching a new square (map data location)
-		return; //nothing else needs to be done here so we can stop the method
-	}
-
-	movedSinceLastSquareMid += delta * moveSpeed; //add to how much we have moved since previous mid-square
 }
 
 void Character::HandleNewMovementSquare(Map& map)
@@ -206,4 +193,24 @@ void Character::HandleNewMovementSquare(Map& map)
 	}
 
 	prevSquareMidPos = sprite.getPosition(); //set prevSquareMidPos to new pos, as we are now at a new mid-square. Has to be done last due to the offsets
+	//std::cout << "LOCATION: " << mapLocation.x << ", " << mapLocation.y << std::endl;
+}
+
+void Character::HandleAnimation()
+{
+	if (animationClock.getElapsedTime().asMilliseconds() > 100 &&
+		(currentMoveDir != Direction::None || currentMoveDir == Direction::None && currentAnimationFrame != 0))
+	{
+
+		animationClock.restart();
+		currentAnimationFrame++;
+
+		if (currentAnimationFrame == numOfAnimationFrames)
+		{
+			currentAnimationFrame = 0;
+		}
+
+		rectSource.left = currentAnimationFrame * 100;
+		sprite.setTextureRect(rectSource);
+	}
 }

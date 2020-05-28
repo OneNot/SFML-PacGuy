@@ -100,7 +100,7 @@ bool Collectable::TryGetCollectableAtMapPos(Character& collector, sf::Vector2i m
 
 void Collectable::SwapCollectablesForCherry(int howMany)
 {
-	srand(time(NULL));
+	//srand(time(NULL));
 
 	for (int i = 0; i < howMany; i++)
 	{
