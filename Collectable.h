@@ -8,6 +8,7 @@
 #include <iterator>
 #include <typeinfo>
 #include <algorithm>
+#include "AudioManager.h"
 
 class Collectable
 {

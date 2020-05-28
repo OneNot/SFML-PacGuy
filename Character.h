@@ -5,18 +5,19 @@
 #include "Direction.h"
 #include "Map.h"
 #include "GameManager.h"
+//#include "AudioManager.h"
 
 class Character
 {
 private:
 	sf::Texture texture;
-	sf::IntRect rectSource;
-	sf::Clock animationClock;
-	int currentAnimationFrame;
 	sf::Vector2f rotationPosOffset;
 
 protected:
 	virtual void HandleNewMovementSquare(Map& map);
+	sf::Clock animationClock;
+	int currentAnimationFrame;
+	sf::IntRect rectSource;
 
 public:
 	sf::Sprite sprite;
@@ -29,5 +30,5 @@ public:
 	Direction nextMoveDirInstruction = Direction::None;
 	sf::Vector2i mapLocation;
 	int numOfAnimationFrames = 3;
-	void HandleAnimation();
+	virtual void HandleAnimation() {};
 };

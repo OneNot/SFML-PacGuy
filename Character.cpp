@@ -141,25 +141,6 @@ void Character::MovementHandling(Map &map, float delta)
 	movedSinceLastSquareMid += delta * moveSpeed; //add to how much we have moved since previous mid-square
 }
 
-void Character::HandleAnimation()
-{
-	//return;
-
-	//std::cout << animationClock.getElapsedTime().asMilliseconds() << std::endl;
-	if (animationClock.getElapsedTime().asMilliseconds() > 100 &&
-		(currentMoveDir != Direction::None || currentMoveDir == Direction::None && currentAnimationFrame != 0))
-	{
-		animationClock.restart();
-		currentAnimationFrame++;
-
-		if (currentAnimationFrame == numOfAnimationFrames)
-			currentAnimationFrame = 0;
-
-		rectSource.left = currentAnimationFrame * 100;
-		sprite.setTextureRect(rectSource);
-	}
-}
-
 void Character::HandleNewMovementSquare(Map& map)
 {
 	if (mapLocation == map.teleports[0])

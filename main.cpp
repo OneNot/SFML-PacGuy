@@ -1,11 +1,13 @@
 #include <string>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Direction.h"
 #include "Map.h"
 #include "Player.h"
 #include "Collectable.h"
 #include "UITextElement.h"
+#include "AudioManager.h"
 
 /*
 Some planning
@@ -37,11 +39,14 @@ Basic movement scenario example:
 Notes for next time:
 - teleports
 - cherries
+- audio:
+	- music
+	- pacman moving/chewing
+	- eat fruit
 
 
 TODO:
 - Enemies
-- Audio
 - Need to do a little bit of code cleanup and refactoring
 */
 
@@ -63,6 +68,9 @@ int main()
 		#pragma region Creating UI Elements
 			UITextElement gameTitleText = UITextElement(window, "Pac-Guy", font, sf::Color::Yellow, 48, UIAnchor::TopMid);
 
+			UITextElement startText = UITextElement(window, "START GAME", font, sf::Color::Yellow, 128, UIAnchor::Mid);
+			UITextElement startSubText = UITextElement(window, "Space/Enter to start", font, sf::Color::Yellow, 32, startText, UIAnchor::LowMid);
+
 			UITextElement pauseText = UITextElement(window, "PAUSE", font, sf::Color::Yellow, 128, UIAnchor::Mid);
 			UITextElement pauseSubText = UITextElement(window, "Press ESC to unpause", font, sf::Color::Yellow, 32, pauseText, UIAnchor::LowMid);
 
@@ -77,6 +85,9 @@ int main()
 			GameManager::UICollected = &UICollectText;
 		#pragma endregion
 
+
+		AudioManager::InitializeAudio();
+
 		//Load and initialize map
 		Map map = Map::Map(window);
 
@@ -88,6 +99,14 @@ int main()
 		player.moveSpeed = 400.0f * map.scale;
 
 	#pragma endregion
+
+	//MUSIC
+	sf::Music music;
+	if (!music.openFromFile("Assets/Audio/Pac-man-theme-remix-By-Arsenic19.wav"))
+		return -1;
+	music.setLoop(true);
+	music.play();
+
 
 	float delta = 0.0f;
 	sf::Clock frameTimeClock;
@@ -125,6 +144,9 @@ int main()
 					if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S)
 						player.nextMoveDirInstruction = Direction::Down;
 				}
+				else if (GameManager::GetGameState() == GameState::Menu &&
+					(event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::Enter))
+					GameManager::ForceSetGameState(GameState::Playing);
 			}
 		}
 
@@ -145,7 +167,12 @@ int main()
 			window.draw(player.sprite);
 			Collectable::DrawCollectables(window);
 
-			if (GameManager::GetGameState() == GameState::Paused)
+			if (GameManager::GetGameState() == GameState::Menu)
+			{
+				window.draw(startText.text);
+				window.draw(startSubText.text);
+			}
+			else if (GameManager::GetGameState() == GameState::Paused)
 			{
 				window.draw(pauseText.text);
 				window.draw(pauseSubText.text);

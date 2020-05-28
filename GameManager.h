@@ -2,6 +2,7 @@
 #include "GameState.h"
 #include "UITextElement.h"
 #include <string>
+#include "AudioManager.h"
 
 static class GameManager
 {
@@ -26,5 +27,6 @@ public:
 	static void TogglePauseGame();
 	static void WinGame();
 	static void HandleScoreLossTimer();
+	static void ForceSetGameState(GameState state);
 };
 

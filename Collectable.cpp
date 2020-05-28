@@ -112,6 +112,9 @@ void Collectable::SwapCollectablesForCherry(int howMany)
 
 void Collectable::Collect(int vectorPos)
 {
+	if (scoreValue > 10)
+		AudioManager::sounds["eat_fruit"]->sound.play();
+
 	GameManager::AddToCollected();
 	GameManager::UpdateScore(scoreValue);
 	collectables.erase(collectables.begin() + vectorPos); //is this enough? Does this cause memory leaks and shit?

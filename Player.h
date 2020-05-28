@@ -1,6 +1,8 @@
 #pragma once
 #include "Character.h"
 #include "Collectable.h"
+#include "AudioManager.h"
+#include <string>
 
 class Player :
 	public Character
@@ -10,5 +12,6 @@ private:
 
 public:
 	using Character::Character;
+	void HandleAnimation() override;
 };
 

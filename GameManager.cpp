@@ -1,6 +1,6 @@
 #include "GameManager.h"
 
-GameState GameManager::gameState = GameState::Playing;
+GameState GameManager::gameState = GameState::Menu;
 int GameManager::score = 0;
 UITextElement* GameManager::UIScore = nullptr;
 UITextElement* GameManager::UIWinScore = nullptr;
@@ -36,6 +36,8 @@ GameState GameManager::GetGameState()
 void GameManager::PauseGame()
 {
 	gameState = GameState::Paused;
+	if (AudioManager::sounds["waka"]->sound.getStatus() == sf::SoundSource::Status::Playing)
+		AudioManager::sounds["waka"]->sound.stop();
 }
 
 void GameManager::ResumeGame()
@@ -46,11 +48,9 @@ void GameManager::ResumeGame()
 void GameManager::TogglePauseGame()
 {
 	if (gameState == GameState::Paused)
-	{
-		gameState = GameState::Playing;
-	}
+		ResumeGame();
 	else if (gameState == GameState::Playing)
-		gameState = GameState::Paused;
+		PauseGame();
 }
 
 void GameManager::WinGame()
@@ -66,4 +66,9 @@ void GameManager::HandleScoreLossTimer()
 		UpdateScore(-scoreLoss);
 		scoreLossClock->restart();
 	}
+}
+
+void GameManager::ForceSetGameState(GameState state)
+{
+	gameState = state;
 }
