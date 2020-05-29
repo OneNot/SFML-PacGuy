@@ -13,7 +13,8 @@ private:
 	void CollisionCheck() override;
 
 public:
-	using Character::Character;
+	static Player* player;
+	Player(sf::RenderWindow& renderWindow, Map& map, std::string characterTextureToUse, sf::Vector2i spawnMapPosition = sf::Vector2i::Vector2(0, 0));
 	void HandleAnimation() override;
 };
 

@@ -110,6 +110,11 @@ void Collectable::SwapCollectablesForCherry(int howMany)
 	}
 }
 
+void Collectable::WipeCollectables()
+{
+	collectables.clear();
+}
+
 void Collectable::Collect(int vectorPos)
 {
 	if (scoreValue > 10)

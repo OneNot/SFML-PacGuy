@@ -1,5 +1,7 @@
 #include "Map.h"
 
+int Map::numOfPathSquares = 0;
+
 Map::Map(sf::RenderWindow& renderWindow)
 {
 	if (!texture.loadFromFile("Assets/Sprites/pac-guy_map.png"))
@@ -16,6 +18,8 @@ Map::Map(sf::RenderWindow& renderWindow)
 		{
 			//std::cout << "at " << y << x << ": ";
 			data[y][x] = (static_cast<int>(mapImg.getPixel(50 + y * 100, 50 + x * 100).a) == 0 ? 0 : 1);
+			if (data[y][x] == 0)
+				numOfPathSquares++;
 			std::cout << (data[y][x] == 0 ? " " : "#");
 		}
 		std::cout << std::endl;
@@ -51,6 +55,21 @@ sf::Vector2f Map::MapPosToRealPos(sf::Vector2i mapPos)
 		sprite.getPosition().x + scaledSquareSize * mapPos.x,
 		sprite.getPosition().y + scaledSquareSize * mapPos.y
 	);
+}
+
+std::vector<sf::Vector2i> Map::GetValidNeighboursOf(sf::Vector2i square)
+{
+	std::vector<sf::Vector2i> valids = std::vector<sf::Vector2i>();
+	if (data[square.x][square.y - 1] == 0)
+		valids.push_back(sf::Vector2i(square.x, square.y - 1));
+	if (data[square.x][square.y + 1] == 0)
+		valids.push_back(sf::Vector2i(square.x, square.y + 1));
+	if (data[square.x - 1][square.y] == 0)
+		valids.push_back(sf::Vector2i(square.x - 1, square.y));
+	if (data[square.x + 1][square.y] == 0)
+		valids.push_back(sf::Vector2i(square.x + 1, square.y));
+
+	return valids;
 }
 
 

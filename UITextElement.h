@@ -11,5 +11,7 @@ public:
 
 	sf::Text text;
 	sf::FloatRect bounds;
+
+	void RePosition(UITextElement anchorToOtherElement, UIAnchor anchor, sf::Vector2f offset = sf::Vector2f(0, 0));
 };
 

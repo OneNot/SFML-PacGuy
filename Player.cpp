@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 
+Player* Player::player = nullptr;
+
 void Player::HandleNewMovementSquare(Map& map)
 {
 	//check for collectables
@@ -47,6 +49,12 @@ void Player::CollisionCheck()
 	}
 	
 	
+}
+
+Player::Player(sf::RenderWindow& renderWindow, Map& map, std::string characterTextureToUse, sf::Vector2i spawnMapPosition) :
+	Character::Character(renderWindow, map, characterTextureToUse, spawnMapPosition)
+{
+	player = this;
 }
 
 void Player::HandleAnimation()

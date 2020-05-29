@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="AudioElement.cpp" />
     <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="Breadth.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Collectable.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="AudioElement.h" />
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="Breadth.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Collectable.h" />
     <ClInclude Include="Direction.h" />
@@ -174,6 +176,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Rando.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="UIAnchor.h" />
     <ClInclude Include="UITextElement.h" />
   </ItemGroup>

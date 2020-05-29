@@ -3,6 +3,7 @@
 #include "UITextElement.h"
 #include <string>
 #include "AudioManager.h"
+#include "Collectable.h"
 
 static class GameManager
 {
@@ -10,13 +11,17 @@ private:
 	static int score;
 	static int CollectablesCollected;
 	static GameState gameState;
+	static void EndGameScoreHandler();
 
 public:
+	static bool RunProgramLoop;
+	static bool RunInnerGameLoop;
 	static int scoreLoss;
 	static float scoreLossTime;
 	static sf::Clock* scoreLossClock;
 	static UITextElement* UIScore;
-	static UITextElement* UIWinScore;
+	static UITextElement* UIWinLoseScore;
+	static UITextElement* UIWinLoseScoreAnchorEl;
 	static UITextElement* UICollected;
 	static int TotalNumOfCollectables;
 	static void AddToCollected();
@@ -29,5 +34,6 @@ public:
 	static void LoseGame();
 	static void HandleScoreLossTimer();
 	static void ForceSetGameState(GameState state);
+	static void RestartGame();
 };
 

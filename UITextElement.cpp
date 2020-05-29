@@ -122,3 +122,62 @@ UITextElement::UITextElement(sf::RenderWindow& window, std::string string, sf::F
 		break;
 	}
 }
+
+void UITextElement::RePosition(UITextElement anchorToOtherElement, UIAnchor anchor, sf::Vector2f offset)
+{
+	bounds = sf::FloatRect(text.getLocalBounds());
+
+	switch (anchor)
+	{
+	case UIAnchor::TopLeft:
+		text.setPosition(
+			anchorToOtherElement.text.getPosition().x + anchorToOtherElement.bounds.left + offset.x,
+			anchorToOtherElement.text.getPosition().y + anchorToOtherElement.bounds.top - bounds.height + offset.y
+		);
+		break;
+	case UIAnchor::TopMid:
+		text.setPosition(
+			anchorToOtherElement.text.getPosition().x + anchorToOtherElement.bounds.left + anchorToOtherElement.bounds.width / 2 - bounds.width / 2 + offset.x,
+			anchorToOtherElement.text.getPosition().y + anchorToOtherElement.bounds.top - bounds.height + offset.y
+		);
+		break;
+	case UIAnchor::TopRight:
+		text.setPosition(
+			anchorToOtherElement.text.getPosition().x + anchorToOtherElement.bounds.left + anchorToOtherElement.bounds.width - bounds.width + offset.x,
+			anchorToOtherElement.text.getPosition().y + anchorToOtherElement.bounds.top - bounds.height + offset.y
+		);
+		break;
+
+	case UIAnchor::MidLeft:
+		text.setPosition(
+			anchorToOtherElement.text.getPosition().x + anchorToOtherElement.bounds.left - bounds.width + offset.x,
+			anchorToOtherElement.text.getPosition().y + anchorToOtherElement.bounds.top + offset.y
+		);
+		break;
+	case UIAnchor::MidRight:
+		text.setPosition(
+			anchorToOtherElement.text.getPosition().x + anchorToOtherElement.bounds.left + bounds.width + offset.x,
+			anchorToOtherElement.text.getPosition().y + anchorToOtherElement.bounds.top + offset.y
+		);
+		break;
+
+	case UIAnchor::LowMid:
+		text.setPosition(
+			anchorToOtherElement.text.getPosition().x + anchorToOtherElement.bounds.left + anchorToOtherElement.bounds.width / 2 - bounds.width / 2 + offset.x,
+			anchorToOtherElement.text.getPosition().y + anchorToOtherElement.bounds.top + anchorToOtherElement.bounds.height + offset.y
+		);
+		break;
+	case UIAnchor::LowLeft:
+		text.setPosition(
+			anchorToOtherElement.text.getPosition().x + anchorToOtherElement.bounds.left + offset.x,
+			anchorToOtherElement.text.getPosition().y + anchorToOtherElement.bounds.top + anchorToOtherElement.bounds.height + offset.y
+		);
+		break;
+	case UIAnchor::LowRight:
+		text.setPosition(
+			anchorToOtherElement.text.getPosition().x + anchorToOtherElement.bounds.left + anchorToOtherElement.bounds.width - bounds.width + offset.x,
+			anchorToOtherElement.text.getPosition().y + anchorToOtherElement.bounds.top + anchorToOtherElement.bounds.height + offset.y
+		);
+		break;
+	}
+}

@@ -30,5 +30,6 @@ public:
 	Collectable(class Map& map, sf::Vector2i spawnMapLocation);
 	static bool TryGetCollectableAtMapPos(class Character& collector, sf::Vector2i mapPos);
 	static void SwapCollectablesForCherry(int howMany);
+	static void WipeCollectables();
 };
 

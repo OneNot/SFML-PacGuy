@@ -3,14 +3,23 @@
 GameState GameManager::gameState = GameState::Menu;
 int GameManager::score = 0;
 UITextElement* GameManager::UIScore = nullptr;
-UITextElement* GameManager::UIWinScore = nullptr;
+UITextElement* GameManager::UIWinLoseScore = nullptr;
+UITextElement* GameManager::UIWinLoseScoreAnchorEl = nullptr;
 UITextElement* GameManager::UICollected = nullptr;
 sf::Clock* GameManager::scoreLossClock = nullptr;
 int GameManager::CollectablesCollected = 0;
 int GameManager::TotalNumOfCollectables = 0;
 int GameManager::scoreLoss = 1;
 float GameManager::scoreLossTime = 500;
+bool GameManager::RunProgramLoop = true;
+bool GameManager::RunInnerGameLoop = true;
 
+
+void GameManager::EndGameScoreHandler()
+{
+	UIWinLoseScore->text.setString(std::to_string(score));
+	UIWinLoseScore->RePosition(*UIWinLoseScoreAnchorEl, UIAnchor::LowMid);
+}
 
 void GameManager::AddToCollected()
 {
@@ -54,13 +63,15 @@ void GameManager::TogglePauseGame()
 
 void GameManager::WinGame()
 {
-	UIWinScore->text.setString(std::to_string(score));//TODO: needs to be re-centered
+	UpdateScore(1000);
+	EndGameScoreHandler();
+	AudioManager::sounds["waka"]->sound.stop();
 	gameState = GameState::Won;
 }
 
 void GameManager::LoseGame()
 {
-	UIWinScore->text.setString(std::to_string(score));//TODO: needs to be re-centered
+	EndGameScoreHandler();
 	AudioManager::sounds["waka"]->sound.stop();
 	AudioManager::music.stop();
 	AudioManager::sounds["death"]->sound.play();
@@ -79,4 +90,11 @@ void GameManager::HandleScoreLossTimer()
 void GameManager::ForceSetGameState(GameState state)
 {
 	gameState = state;
+}
+
+void GameManager::RestartGame()
+{
+	score = CollectablesCollected = TotalNumOfCollectables = 0;
+	Collectable::WipeCollectables();
+	RunInnerGameLoop = false;
 }

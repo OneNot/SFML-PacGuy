@@ -1,3 +1,7 @@
-﻿  Player.cpp
-D:\OtherProjects\SFML-PacGuy\SFML-PacGuy\GameManager.h(32,2): warning C4091: 'static ': ignored on left of 'GameManager' when no variable is declared
+﻿  GameManager.cpp
+D:\OtherProjects\SFML-PacGuy\SFML-PacGuy\GameManager.h(38,2): warning C4091: 'static ': ignored on left of 'GameManager' when no variable is declared
+  main.cpp
+D:\OtherProjects\SFML-PacGuy\SFML-PacGuy\GameManager.h(38,2): warning C4091: 'static ': ignored on left of 'GameManager' when no variable is declared
+D:\OtherProjects\SFML-PacGuy\SFML-PacGuy\main.cpp(57,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating Code...
   SFML-PacGuy.vcxproj -> D:\OtherProjects\SFML-PacGuy\SFML-PacGuy\x64\Debug\SFML-PacGuy.exe
